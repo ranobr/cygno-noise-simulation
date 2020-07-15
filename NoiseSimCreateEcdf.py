@@ -56,7 +56,7 @@ def generate_ecdf(options):
     ## Matrix variable to receive N images
     img_real = np.zeros((N-Njump, Ny, Nx), dtype=np.uint16)   
 
-    for i in range(0,1): #(Nx/Ny)
+    for i in range(0,Nx/Ny): #(Nx/Ny)
         print("Doing part %d of %d" % (i,Nx/(Ny-1)))
         #img_real[k, np.array(pixel)[0,:], np.array(pixel)[1,:]] = hist2array(f.Get(pic[iTr]))[pixel]
         k = -1
