@@ -8,8 +8,6 @@ import commands
 import time
 import ROOT
 from root_numpy import hist2array
-import noisesim_lib as ns
-
 
 def root_TH2_name(root_file):
     pic = []
@@ -22,6 +20,7 @@ def root_TH2_name(root_file):
             wfm.append(che)
     return pic, wfm
 
+## Genereta ECDF
 def ecdf(data):
     """ Compute ECDF """
     unique, counts = np.unique(data, return_counts=True)
@@ -50,7 +49,7 @@ def generate_ecdf(options):
     else:
         N = len(pic)
     Njump = 5 #ignore first images (usually they are unstable)
-    Nx    = int(2048) # Fixed in 2048
+    Nx    = np.shape(hist2array(f.Get(pic[iTr])))[0] # Fixed in 2048 or the max number of pixels of the camera
     Ny    = int(options.ny) # Ny represeting the number of lines at time
 
     ## Matrix variable to receive N images
