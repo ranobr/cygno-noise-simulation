@@ -14,20 +14,25 @@ def merge(runnumber):
     t0    = time.time()
     print("MERGING AND REMOVING CHUNK FILES")
     arrays = []
-    k = 0
     string = "ecdf_map_Run"+runnumber+"chunk*.npy"
     name = glob.glob(string)
     name.sort()
-    for name in name:
-        print(name)
-        arrays.append(np.load(name))
-        os.remove(name) 
-        k = k+1
- 
+    for n in name:
+        print(n)
+        data = np.load(n)
+        arrays.append(data)
+        del data
+    N = name[0].split('_N')[1].split('.')[0]
     print(">> Saving file...")
-    string = "ecdf_map_Run"+runnumber
+    string = "ecdf_map_Run"+runnumber+"_N"+str(N)
     np.save(string, np.concatenate(arrays))
     print(">> File saved as %s" % (string))
+    
+    print(">> Removing chunk files...")
+    name.sort()
+    for n in name:        
+        os.remove(n) 
+    
     print("Merging elapsed time: %.2f" % (time.time()-t0))
          
     
@@ -109,7 +114,7 @@ def generate_ecdf(options):
         
         if saveMap == 1:
             print(">> Saving chunk file...")
-            string = outputfilename+'chunk'+str(i).zfill(2)
+            string = outputfilename+'chunk'+str(i).zfill(2)+'_N'+str(N)
             np.save(string, np.array(ecdf_map))
 
     print("Total time elapsed: %.2f" % (time.time()-t1))
@@ -131,6 +136,7 @@ if __name__ == '__main__':
         print('Filename/Directory is necessary to run this script')
         exit()
     else:
-        setattr(options,'runnumber', options.filename.split('Run')[1].split('.')[0])
-        generate_ecdf(options)
+        if options.ny != -1:
+            setattr(options,'runnumber', options.filename.split('Run')[1].split('.')[0])
+            generate_ecdf(options)
         merge(options.filename.split('Run')[1].split('.')[0])
