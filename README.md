@@ -1,6 +1,6 @@
 # cygno-noise-simulation
 
-Algorithm to generate the simulated noise images
+Algorithm to generate ecdf map and simulated noise images
 
 # How-to-Run
 This code is splited in two steps:
@@ -9,27 +9,31 @@ This code is splited in two steps:
 
 ## ECDF generation:
 
-`python2 NoiseSimCreateEcdf.py -n 100 -y 16 -r histograms_Run0000X.root`
+`python3 NoiseSimCreateEcdf.py -n 1000 -y 32 -r histograms_RunXXXXX.root`
 
-- *n* is number of images to be taken into account to create the ECDF.
-- *y* is the number of lines to be used in each chunk (in order to prevent out of memory).
+- *n* number of images to be taken into account to create the ECDF. If not defined, all run images will be used. The first five images are always skipped.
+- *y* number of lines to be used in each chunk (in order to prevent out of memory however, the lower this number, the longer the processing time). This number must be an exact fraction of the number of rows of the sensor.
 - *r* is the .root filename to be used.
 
-p.s. the output of this algorithm is a *.npy* file with the ECDF for each pixel.
+p.s. the output of this algorithm is a *.npy* file containing a ECDF for each pixel.
 
 ## Images generation:
 
-`python2 NoiseSimCreateImgs.py -n 100 -r 90000 -f ecdf_map_Run02054.npy`
+`python3 NoiseSimCreateImgs.py -n 500 -r 90000 -f ecdf_map_RunXXXXX.npy`
 
-- *n* is number of images to be generated.
-- *r* is the output run number to be used as a name for the output file.
+- *n* number of images to be generated.
+- *r* output run number used in the name of the output file (e.g. histograms_Run90000.root).
 - *f* is the .npy ECDF filename to be used.
+
+p.s. the output of this algorithm is a *.root* file with the simulated images.
+
 
 
 # Dependences
-- Python 2.X
+- Python 3.X
 - Root 6.X
 - root-numpy
-- Numpy
-- Time
-
+- numpy
+- time
+- glob
+- os

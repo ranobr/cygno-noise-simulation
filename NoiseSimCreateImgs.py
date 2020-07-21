@@ -4,7 +4,6 @@
 # Tool to simulated noise images
 #
 import numpy as np
-import commands
 import time
 import ROOT
 from root_numpy import hist2array, array2hist
@@ -44,12 +43,13 @@ def generate_noise(options):
     ecdf_filename = options.filename
 
     outfile=ROOT.TFile(outfolder+'/'+infile+'_Run'+run_count+'.root', 'RECREATE') #OUTPUT NAME
-
+    
+    print('[Generating simulated images]')
     imgs = generateNoiseImage(ecdf_filename, Nclone)
     nX = np.shape(imgs)[1]
     nY = np.shape(imgs)[2]
 
-    print('[Generating images]')
+    print('[Generating ROOT file]')
     for entry in range(0, Nclone): #RUNNING ON ENTRIES
 
         final_imgs = ROOT.TH2F('pic_run'+str(run_count)+'_ev'+str(entry), '', nX, 0, (nX-1), nY, 0, (nY-1))
