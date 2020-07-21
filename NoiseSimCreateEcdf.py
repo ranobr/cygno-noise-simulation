@@ -86,7 +86,7 @@ def generate_ecdf(options):
         k = -1
         for iTr in range(Njump,N):
             k = k+1
-            if k == 500 or k == 0:
+            if k % 500 == 0:
                 f.Close()
                 f = ROOT.TFile(filename)
                 pic, wfm = root_TH2_name(f)
