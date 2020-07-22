@@ -10,19 +10,36 @@ import os
 import ROOT
 from root_numpy import hist2array
 
-def merge(runnumber):
+def merge(runnumber, N):
     t0    = time.time()
     print("MERGING AND REMOVING CHUNK FILES")
-    arrays = []
-    string = "ecdf_map_Run"+runnumber+"chunk*.npy"
+    
+    string = "ecdf_map_Run*chunk*_N*.npy" #select files with same N
     name = glob.glob(string)
+    if len(name) == 0:
+        print("No file found with the following format: ecdf_map_Run*chunk*_N*.npy")
+        return
+    if runnumber == '':
+        runnumber = name[0].split('Run')[1].split('chunk')[0]
+    if N == 0:
+        N = int(name[0].split('_N')[1].split('.')[0])
+    del name
+    
+    string = "ecdf_map_Run"+runnumber+"chunk*_N"+str(N)+".npy" #get files of a specific run and specific N
+    name = glob.glob(string)
+    if len(name) == 0:
+        print("No file found with the following format: "+string)
+        return
     name.sort()
+    
+    
+    arrays = []
     for n in name:
         print(n)
         data = np.load(n)
         arrays.append(data)
         del data
-    N = name[0].split('_N')[1].split('.')[0]
+    
     print(">> Saving file...")
     string = "ecdf_map_Run"+runnumber+"_N"+str(N)
     np.save(string, np.concatenate(arrays))
@@ -86,7 +103,7 @@ def generate_ecdf(options):
     img_real = np.zeros((N-Njump, Ny, Nx), dtype=np.uint16)   
 
     for i in range(0,int(Nx/Ny)): #(Nx/Ny)
-        print("PROCESSING PART %d of %d" % (i,int(Nx/Ny)))
+        print("PROCESSING PART %d of %d" % (i+1,int(Nx/Ny)))
         print(">> Loading images...")
         k = -1
         for iTr in range(Njump,N):
@@ -135,8 +152,19 @@ if __name__ == '__main__':
     if (options.filename == ''):
         print('Filename/Directory is necessary to run this script')
         exit()
-    else:
-        if options.ny != -1:
-            setattr(options,'runnumber', options.filename.split('Run')[1].split('.')[0])
-            generate_ecdf(options)
-        merge(options.filename.split('Run')[1].split('.')[0])
+    
+    if options.ny != -1:
+        setattr(options,'runnumber', options.filename.split('Run')[1].split('.')[0])
+        generate_ecdf(options)        
+    
+    #free some memory before merging chunk files
+    del OptionParser
+    del ROOT
+    del args
+    del ecdf
+    del generate_ecdf
+    del hist2array
+    del parser
+    del root_TH2_name
+    
+    merge(options.filename.split('Run')[1].split('.')[0], options.nimages)
