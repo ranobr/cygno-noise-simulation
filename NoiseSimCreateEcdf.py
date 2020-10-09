@@ -146,25 +146,28 @@ if __name__ == '__main__':
     parser.add_option('-n','--nimages', dest='nimages', type='int', default=0, help='Number of imagens to be analyzed');
     parser.add_option('-y','--ny', dest='ny', type='int', default=4, help='Number of lines to be analyzed at time');
     parser.add_option('-r','--run', dest='filename', type='string', default='', help='Filename [get] or path/filename[put] to the desired file.');
+    parser.add_option('-m','--just-merge', dest='jmerge', type='int', default=0, help='In case you already have the .py chunks you can use just-merge == 1 to only merge the files.');
     #parser.add_option('-h', '--help', help='Show this help message');
     (options, args) = parser.parse_args()
 
     if (options.filename == ''):
         print('Filename/Directory is necessary to run this script')
         exit()
-    
-    if options.ny != -1:
-        setattr(options,'runnumber', options.filename.split('Run')[1].split('.')[0])
-        generate_ecdf(options)        
-    
-    #free some memory before merging chunk files
-    del OptionParser
-    del ROOT
-    del args
-    del ecdf
-    del generate_ecdf
-    del hist2array
-    del parser
-    del root_TH2_name
-    
-    merge(options.filename.split('Run')[1].split('.')[0], options.nimages)
+    if jmerge == 0: 
+        if options.ny != -1:
+            setattr(options,'runnumber', options.filename.split('Run')[1].split('.')[0])
+            generate_ecdf(options)        
+
+        #free some memory before merging chunk files
+        del OptionParser
+        del ROOT
+        del args
+        del ecdf
+        del generate_ecdf
+        del hist2array
+        del parser
+        del root_TH2_name
+
+        merge(options.runnumber, options.nimages)
+     else:
+        merge(options.runnumber, options.nimages)
