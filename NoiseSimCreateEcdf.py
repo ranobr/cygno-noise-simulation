@@ -19,7 +19,7 @@ def merge(runnumber):
     name.sort()
     for n in name:
         print(n)
-        data = np.load(n)
+        data = np.load(n,allow_pickle=True)
         arrays.append(data)
         del data
     N = name[0].split('_N')[1].split('.')[0]
