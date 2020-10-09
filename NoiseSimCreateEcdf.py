@@ -36,7 +36,7 @@ def merge(runnumber, N):
     arrays = []
     for n in name:
         print(n)
-        data = np.load(n)
+        data = np.load(n,allow_pickle=True)
         arrays.append(data)
         del data
     
