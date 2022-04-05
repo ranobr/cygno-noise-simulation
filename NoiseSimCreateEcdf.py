@@ -2,13 +2,15 @@
 #
 # R. A. Nobrega and I. Abritta July 2020
 # Tool to simulated noise images
-#
+# 
 import numpy as np
 import time
 import glob
 import os
 import ROOT
 from root_numpy import hist2array
+import matplotlib.pyplot as plt
+
 
 def merge(runnumber, N):
     t0    = time.time()
@@ -59,7 +61,11 @@ def root_TH2_name(root_file):
     wfm = []
     for i,e in enumerate(root_file.GetListOfKeys()):
         che = e.GetName()
+        #print('TESTINGGGGG')
+        #print(che)
         if ('pic_run' in str(che)):
+            pic.append(che)
+        elif ('run_' in str(che)):
             pic.append(che)
         elif ('wfm_run' in str(che)):
             wfm.append(che)
